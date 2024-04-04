@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const { isEnabled } = require('../server/utils/handleText');
 const transactionSchema = require('./schema/transaction');
 const { getMultiplier } = require('./tx');
-const { logger } = require('~/config');
 const Balance = require('./Balance');
 const cancelRate = 1.15;
 
@@ -21,7 +20,14 @@ transactionSchema.methods.calculateTokenValue = function () {
   }
 };
 
-// Static method to create a transaction and update the balance
+/**
+ * Creates a transaction and updates the balance.
+ * @memberof Transaction
+ * @static
+ * @method create
+ * @param {Transaction} transactionData - The data for the transaction.
+ * @returns {Object} - The updated balance and transaction details.
+ */
 transactionSchema.statics.create = async function (transactionData) {
   const Transaction = this;
 
@@ -65,7 +71,7 @@ async function getTransactions(filter) {
   try {
     return await Transaction.find(filter).lean();
   } catch (error) {
-    logger.error('Error querying transactions:', error);
+    console.error('Error querying transactions:', error);
     throw error;
   }
 }

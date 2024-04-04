@@ -50,7 +50,6 @@ bower_components/
 
 #config file
 librechat.yaml
-librechat.yml
 
 # Environment
 .npmrc
@@ -94,6 +93,3 @@ auth.json
 
 # User uploads
 uploads/
-
-# owner
-release/

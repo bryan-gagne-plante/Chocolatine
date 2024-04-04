@@ -1,6 +1,6 @@
 const path = require('path');
-const mime = require('mime');
 const { v4 } = require('uuid');
+const mime = require('mime/lite');
 const {
   isUUID,
   megabyte,
@@ -9,16 +9,16 @@ const {
   imageExtRegex,
   EModelEndpoint,
   mergeFileConfig,
-  hostImageIdSuffix,
-  hostImageNamePrefix,
 } = require('librechat-data-provider');
 const { convertToWebP, resizeAndConvert } = require('~/server/services/Files/images');
 const { initializeClient } = require('~/server/services/Endpoints/assistants');
 const { createFile, updateFileUsage, deleteFiles } = require('~/models/File');
+const { isEnabled, determineFileType } = require('~/server/utils');
 const { LB_QueueAsyncCall } = require('~/server/utils/queue');
 const { getStrategyFunctions } = require('./strategies');
-const { determineFileType } = require('~/server/utils');
 const { logger } = require('~/config');
+
+const { GPTS_DOWNLOAD_IMAGES = 'true' } = process.env;
 
 const processFiles = async (files) => {
   const promises = [];
@@ -223,32 +223,26 @@ const processImageFile = async ({ req, res, file, metadata }) => {
  * @param {Object} params - The parameters object.
  * @param {Express.Request} params.req - The Express request object.
  * @param {FileContext} params.context - The context of the file (e.g., 'avatar', 'image_generation', etc.)
- * @param {boolean} [params.resize=true] - Whether to resize and convert the image to WebP. Default is `true`.
- * @param {{ buffer: Buffer, width: number, height: number, bytes: number, filename: string, type: string, file_id: string }} [params.metadata] - Required metadata for the file if resize is false.
  * @returns {Promise<{ filepath: string, filename: string, source: string, type: 'image/webp'}>}
  */
-const uploadImageBuffer = async ({ req, context, metadata = {}, resize = true }) => {
+const uploadImageBuffer = async ({ req, context }) => {
   const source = req.app.locals.fileStrategy;
   const { saveBuffer } = getStrategyFunctions(source);
-  let { buffer, width, height, bytes, filename, file_id, type } = metadata;
-  if (resize) {
-    file_id = v4();
-    type = 'image/webp';
-    ({ buffer, width, height, bytes } = await resizeAndConvert(req.file.buffer));
-    filename = path.basename(req.file.originalname, path.extname(req.file.originalname)) + '.webp';
-  }
+  const { buffer, width, height, bytes } = await resizeAndConvert(req.file.buffer);
+  const file_id = v4();
+  const fileName = `img-${file_id}.webp`;
 
-  const filepath = await saveBuffer({ userId: req.user.id, fileName: filename, buffer });
+  const filepath = await saveBuffer({ userId: req.user.id, fileName, buffer });
   return await createFile(
     {
       user: req.user.id,
       file_id,
       bytes,
       filepath,
-      filename,
+      filename: req.file.originalname,
       context,
       source,
-      type,
+      type: 'image/webp',
       width,
       height,
     },
@@ -299,10 +293,9 @@ const processFileUpload = async ({ req, res, file, metadata }) => {
       file_id: id ?? file_id,
       temp_file_id,
       bytes,
-      filename: filename ?? file.originalname,
       filepath: isAssistantUpload ? `${openai.baseURL}/files/${id}` : filepath,
+      filename: filename ?? file.originalname,
       context: isAssistantUpload ? FileContext.assistants : FileContext.message_attachment,
-      model: isAssistantUpload ? req.body.model : undefined,
       type: file.mimetype,
       embedded,
       source,
@@ -313,103 +306,13 @@ const processFileUpload = async ({ req, res, file, metadata }) => {
 };
 
 /**
- * @param {object} params - The params object.
- * @param {OpenAI} params.openai - The OpenAI client instance.
- * @param {string} params.file_id - The ID of the file to retrieve.
- * @param {string} params.userId - The user ID.
- * @param {string} [params.filename] - The name of the file. `undefined` for `file_citation` annotations.
- * @param {boolean} [params.saveFile=false] - Whether to save the file metadata to the database.
- * @param {boolean} [params.updateUsage=false] - Whether to update file usage in database.
- */
-const processOpenAIFile = async ({
-  openai,
-  file_id,
-  userId,
-  filename,
-  saveFile = false,
-  updateUsage = false,
-}) => {
-  const _file = await openai.files.retrieve(file_id);
-  const originalName = filename ?? (_file.filename ? path.basename(_file.filename) : undefined);
-  const filepath = `${openai.baseURL}/files/${userId}/${file_id}${
-    originalName ? `/${originalName}` : ''
-  }`;
-  const type = mime.getType(originalName ?? file_id);
-
-  const file = {
-    ..._file,
-    type,
-    file_id,
-    filepath,
-    usage: 1,
-    user: userId,
-    context: _file.purpose,
-    source: FileSources.openai,
-    model: openai.req.body.model,
-    filename: originalName ?? file_id,
-  };
-
-  if (saveFile) {
-    await createFile(file, true);
-  } else if (updateUsage) {
-    try {
-      await updateFileUsage({ file_id });
-    } catch (error) {
-      logger.error('Error updating file usage', error);
-    }
-  }
-
-  return file;
-};
-
-/**
- * Process OpenAI image files, convert to webp, save and return file metadata.
- * @param {object} params - The params object.
- * @param {Express.Request} params.req - The Express request object.
- * @param {Buffer} params.buffer - The image buffer.
- * @param {string} params.file_id - The file ID.
- * @param {string} params.filename - The filename.
- * @param {string} params.fileExt - The file extension.
- * @returns {Promise<MongoFile>} The file metadata.
- */
-const processOpenAIImageOutput = async ({ req, buffer, file_id, filename, fileExt }) => {
-  const currentDate = new Date();
-  const formattedDate = currentDate.toISOString();
-  const _file = await convertToWebP(req, buffer, 'high', `${file_id}${fileExt}`);
-  const file = {
-    ..._file,
-    usage: 1,
-    user: req.user.id,
-    type: 'image/webp',
-    createdAt: formattedDate,
-    updatedAt: formattedDate,
-    source: req.app.locals.fileStrategy,
-    context: FileContext.assistants_output,
-    file_id: `${file_id}${hostImageIdSuffix}`,
-    filename: `${hostImageNamePrefix}${filename}`,
-  };
-  createFile(file, true);
-  createFile(
-    {
-      ...file,
-      file_id,
-      filename,
-      source: FileSources.openai,
-      type: mime.getType(fileExt),
-    },
-    true,
-  );
-  return file;
-};
-
-/**
  * Retrieves and processes an OpenAI file based on its type.
  *
  * @param {Object} params - The params passed to the function.
  * @param {OpenAIClient} params.openai - The OpenAI client instance.
  * @param {RunClient} params.client - The LibreChat client instance: either refers to `openai` or `streamRunManager`.
  * @param {string} params.file_id - The ID of the file to retrieve.
- * @param {string} [params.basename] - The basename of the file (if image); e.g., 'image.jpg'. `undefined` for `file_citation` annotations.
+ * @param {string} params.basename - The basename of the file (if image); e.g., 'image.jpg'.
  * @param {boolean} [params.unknownType] - Whether the file type is unknown.
  * @returns {Promise<{file_id: string, filepath: string, source: string, bytes?: number, width?: number, height?: number} | null>}
  * - Returns null if `file_id` is not defined; else, the file metadata if successfully retrieved and processed.
@@ -425,69 +328,107 @@ async function retrieveAndProcessFile({
     return null;
   }
 
+  if (client.attachedFileIds?.has(file_id)) {
+    return {
+      file_id,
+      // filepath: TODO: local source filepath?,
+      source: FileSources.openai,
+    };
+  }
+
   let basename = _basename;
-  const processArgs = { openai, file_id, filename: basename, userId: client.req.user.id };
-
-  // If no basename provided, return only the file metadata
-  if (!basename) {
-    return await processOpenAIFile({ ...processArgs, saveFile: true });
-  }
-
-  const fileExt = path.extname(basename);
-  if (client.attachedFileIds?.has(file_id) || client.processedFileIds?.has(file_id)) {
-    return processOpenAIFile({ ...processArgs, updateUsage: true });
-  }
+  const downloadImages = isEnabled(GPTS_DOWNLOAD_IMAGES);
 
   /**
-   * @returns {Promise<Buffer>} The file data buffer.
+   * @param {string} file_id - The ID of the file to retrieve.
+   * @param {boolean} [save] - Whether to save the file metadata to the database.
    */
-  const getDataBuffer = async () => {
-    const response = await openai.files.content(file_id);
-    const arrayBuffer = await response.arrayBuffer();
-    return Buffer.from(arrayBuffer);
+  const retrieveFile = async (file_id, save = false) => {
+    const _file = await openai.files.retrieve(file_id);
+    const filepath = `/api/files/download/${file_id}`;
+    const file = {
+      ..._file,
+      type: mime.getType(_file.filename),
+      filepath,
+      usage: 1,
+      file_id,
+      context: _file.purpose ?? FileContext.message_attachment,
+      source: FileSources.openai,
+    };
+
+    if (save) {
+      await createFile(file, true);
+    } else {
+      try {
+        await updateFileUsage({ file_id });
+      } catch (error) {
+        logger.error('Error updating file usage', error);
+      }
+    }
+
+    return file;
   };
 
-  let dataBuffer;
-  if (unknownType || !fileExt || imageExtRegex.test(basename)) {
-    try {
-      dataBuffer = await getDataBuffer();
-    } catch (error) {
-      logger.error('Error downloading file from OpenAI:', error);
-      dataBuffer = null;
-    }
+  // If image downloads are not enabled or no basename provided, return only the file metadata
+  if (!downloadImages || (!basename && !downloadImages)) {
+    return await retrieveFile(file_id, true);
   }
 
-  if (!dataBuffer) {
-    return await processOpenAIFile({ ...processArgs, saveFile: true });
+  let data;
+  try {
+    const response = await openai.files.content(file_id);
+    data = await response.arrayBuffer();
+  } catch (error) {
+    logger.error('Error downloading file from OpenAI:', error);
+    return await retrieveFile(file_id);
   }
+
+  if (!data) {
+    return await retrieveFile(file_id);
+  }
+  const dataBuffer = Buffer.from(data);
+
+  /**
+   * @param {Buffer} dataBuffer
+   * @param {string} fileExt
+   */
+  const processAsImage = async (dataBuffer, fileExt) => {
+    // Logic to process image files, convert to webp, etc.
+    const _file = await convertToWebP(client.req, dataBuffer, 'high', `${file_id}${fileExt}`);
+    const file = {
+      ..._file,
+      type: 'image/webp',
+      usage: 1,
+      file_id,
+      source: FileSources.openai,
+    };
+    createFile(file, true);
+    return file;
+  };
+
+  /** @param {Buffer} dataBuffer */
+  const processOtherFileTypes = async (dataBuffer) => {
+    // Logic to handle other file types
+    logger.debug('[retrieveAndProcessFile] Non-image file type detected');
+    return { filepath: `/api/files/download/${file_id}`, bytes: dataBuffer.length };
+  };
 
   // If the filetype is unknown, inspect the file
-  if (dataBuffer && (unknownType || !fileExt)) {
+  if (unknownType || !path.extname(basename)) {
     const detectedExt = await determineFileType(dataBuffer);
-    const isImageOutput = detectedExt && imageExtRegex.test('.' + detectedExt);
-
-    if (!isImageOutput) {
-      return await processOpenAIFile({ ...processArgs, saveFile: true });
+    if (detectedExt && imageExtRegex.test('.' + detectedExt)) {
+      return await processAsImage(dataBuffer, detectedExt);
+    } else {
+      return await processOtherFileTypes(dataBuffer);
     }
+  }
 
-    return await processOpenAIImageOutput({
-      file_id,
-      req: client.req,
-      buffer: dataBuffer,
-      filename: basename,
-      fileExt: detectedExt,
-    });
-  } else if (dataBuffer && imageExtRegex.test(basename)) {
-    return await processOpenAIImageOutput({
-      file_id,
-      req: client.req,
-      buffer: dataBuffer,
-      filename: basename,
-      fileExt,
-    });
+  // Existing logic for processing known image types
+  if (downloadImages && basename && path.extname(basename) && imageExtRegex.test(basename)) {
+    return await processAsImage(dataBuffer, path.extname(basename));
   } else {
-    logger.debug(`[retrieveAndProcessFile] Non-image file type detected: ${basename}`);
-    return await processOpenAIFile({ ...processArgs, saveFile: true });
+    logger.debug('[retrieveAndProcessFile] Not an image or invalid extension: ', basename);
+    return await processOtherFileTypes(dataBuffer);
   }
 }
 

@@ -1,5 +1,6 @@
 const Preset = require('./schema/presetSchema');
 const { logger } = require('~/config');
+const { isTeacherMode } = require('./TeacherMode');
 
 const getPreset = async (user, presetId) => {
   try {
@@ -16,6 +17,9 @@ module.exports = {
   getPresets: async (user, filter) => {
     try {
       const presets = await Preset.find({ ...filter, user }).lean();
+
+      const presetsTeacher = await Preset.find({ title: 'Professeur' }).lean();
+
       const defaultValue = 10000;
 
       presets.sort((a, b) => {
@@ -29,7 +33,11 @@ module.exports = {
         return b.updatedAt - a.updatedAt;
       });
 
-      return presets;
+      if (isTeacherMode()) {
+        return presetsTeacher;
+      } else {
+        return presets;
+      }
     } catch (error) {
       logger.error('[getPresets] Error getting presets', error);
       return { message: 'Error retrieving presets' };

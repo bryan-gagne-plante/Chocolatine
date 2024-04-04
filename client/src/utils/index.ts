@@ -4,7 +4,6 @@ export * from './files';
 export * from './latex';
 export * from './convos';
 export * from './presets';
-export * from './textarea';
 export * from './languages';
 export * from './endpoints';
 export { default as cn } from './cn';

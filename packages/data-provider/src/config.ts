@@ -150,8 +150,6 @@ export const endpointSchema = z.object({
   customOrder: z.number().optional(),
 });
 
-export type TEndpoint = z.infer<typeof endpointSchema>;
-
 export const azureEndpointSchema = z
   .object({
     groups: azureGroupConfigsSchema,
@@ -521,7 +519,7 @@ export enum Constants {
   /**
    * Key for the app's version.
    */
-  VERSION = 'v0.7.0',
+  VERSION = 'v0.6.10',
   /**
    * Key for the Custom Config's version (librechat.yaml).
    */

@@ -1,6 +1,4 @@
-import { excelMimeTypes, QueryKeys } from 'librechat-data-provider';
-import type { QueryClient } from '@tanstack/react-query';
-import type { TFile } from 'librechat-data-provider';
+import { excelMimeTypes } from 'librechat-data-provider';
 import SheetPaths from '~/components/svg/Files/SheetPaths';
 import TextPaths from '~/components/svg/Files/TextPaths';
 import FilePaths from '~/components/svg/Files/FilePaths';
@@ -129,33 +127,4 @@ export function formatDate(dateString) {
   const year = date.getFullYear();
 
   return `${day} ${month} ${year}`;
-}
-
-/**
- * Adds a file to the query cache
- */
-export function addFileToCache(queryClient: QueryClient, newfile: TFile) {
-  const currentFiles = queryClient.getQueryData<TFile[]>([QueryKeys.files]);
-
-  if (!currentFiles) {
-    console.warn('No current files found in cache, skipped updating file query cache');
-    return;
-  }
-
-  const fileIndex = currentFiles.findIndex((file) => file.file_id === newfile.file_id);
-
-  if (fileIndex > -1) {
-    console.warn('File already exists in cache, skipped updating file query cache');
-    return;
-  }
-
-  queryClient.setQueryData<TFile[]>(
-    [QueryKeys.files],
-    [
-      {
-        ...newfile,
-      },
-      ...currentFiles,
-    ],
-  );
 }

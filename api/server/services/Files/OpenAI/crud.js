@@ -60,20 +60,4 @@ async function deleteOpenAIFile(req, file, openai) {
   }
 }
 
-/**
- * Retrieves a readable stream for a file from local storage.
- *
- * @param {string} file_id - The file_id.
- * @param {OpenAI} openai - The initialized OpenAI client.
- * @returns {Promise<ReadableStream>} A readable stream of the file.
- */
-async function getOpenAIFileStream(file_id, openai) {
-  try {
-    return await openai.files.content(file_id);
-  } catch (error) {
-    logger.error('Error getting OpenAI file download stream:', error);
-    throw error;
-  }
-}
-
-module.exports = { uploadOpenAIFile, deleteOpenAIFile, getOpenAIFileStream };
+module.exports = { uploadOpenAIFile, deleteOpenAIFile };

@@ -5,15 +5,7 @@ const { redactFormat, redactMessage, debugTraverse } = require('./parsers');
 
 const logDir = path.join(__dirname, '..', 'logs');
 
-const { NODE_ENV, DEBUG_LOGGING = true, DEBUG_CONSOLE = false, CONSOLE_JSON = false } = process.env;
-
-const useConsoleJson =
-  (typeof CONSOLE_JSON === 'string' && CONSOLE_JSON?.toLowerCase() === 'true') ||
-  CONSOLE_JSON === true;
-
-const useDebugConsole =
-  (typeof DEBUG_CONSOLE === 'string' && DEBUG_CONSOLE?.toLowerCase() === 'true') ||
-  DEBUG_CONSOLE === true;
+const { NODE_ENV, DEBUG_LOGGING = true, DEBUG_CONSOLE = false } = process.env;
 
 const levels = {
   error: 0,
@@ -41,7 +33,7 @@ const level = () => {
 
 const fileFormat = winston.format.combine(
   redactFormat(),
-  winston.format.timestamp({ format: () => new Date().toISOString() }),
+  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
   winston.format.splat(),
   // redactErrors(),
@@ -107,20 +99,14 @@ const consoleFormat = winston.format.combine(
   }),
 );
 
-if (useDebugConsole) {
+if (
+  (typeof DEBUG_CONSOLE === 'string' && DEBUG_CONSOLE?.toLowerCase() === 'true') ||
+  DEBUG_CONSOLE === true
+) {
   transports.push(
     new winston.transports.Console({
       level: 'debug',
-      format: useConsoleJson
-        ? winston.format.combine(fileFormat, debugTraverse, winston.format.json())
-        : winston.format.combine(fileFormat, debugTraverse),
-    }),
-  );
-} else if (useConsoleJson) {
-  transports.push(
-    new winston.transports.Console({
-      level: 'info',
-      format: winston.format.combine(fileFormat, winston.format.json()),
+      format: winston.format.combine(fileFormat, debugTraverse),
     }),
   );
 } else {

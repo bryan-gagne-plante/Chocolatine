@@ -12,8 +12,8 @@ const {
   openapiToFunction,
   validateAndParseOpenAPISpec,
 } = require('librechat-data-provider');
-const { processFileURL, uploadImageBuffer } = require('~/server/services/Files/process');
 const { loadActionSets, createActionTool, domainParser } = require('./ActionService');
+const { processFileURL } = require('~/server/services/Files/process');
 const { recordUsage } = require('~/server/services/Threads');
 const { loadTools } = require('~/app/clients/tools/util');
 const { redactMessage } = require('~/config/parsers');
@@ -147,7 +147,7 @@ const processVisionRequest = async (client, currentAction) => {
 
 /**
  * Processes return required actions from run.
- * @param {OpenAIClient | StreamRunManager} client - OpenAI (legacy) or StreamRunManager Client.
+ * @param {OpenAIClient} client - OpenAI or StreamRunManager Client.
  * @param {RequiredAction[]} requiredActions - The required actions to submit outputs for.
  * @returns {Promise<ToolOutputs>} The outputs of the tools.
  */
@@ -164,8 +164,6 @@ async function processRequiredActions(client, requiredActions) {
     functions: true,
     options: {
       processFileURL,
-      req: client.req,
-      uploadImageBuffer,
       openAIApiKey: client.apiKey,
       fileStrategy: client.req.app.locals.fileStrategy,
       returnMetadata: true,
@@ -270,6 +268,7 @@ async function processRequiredActions(client, requiredActions) {
       if (!actionSets.length) {
         actionSets =
           (await loadActionSets({
+            user: client.req.user.id,
             assistant_id: client.req.body.assistant_id,
           })) ?? [];
       }

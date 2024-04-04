@@ -322,8 +322,7 @@ Some of the endpoints are marked as **Known,** which means they might have speci
 ```yaml
     - name: "Ollama"
       apiKey: "ollama"
-      # use 'host.docker.internal' instead of localhost if running LibreChat in a docker container
-      baseURL: "http://localhost:11434/v1/chat/completions" 
+      baseURL: "http://localhost:11434/v1/"
       models:
         default: [
           "llama2",

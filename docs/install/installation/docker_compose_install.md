@@ -51,12 +51,7 @@ Once you have completed all the setup, you can start the LibreChat application b
 That's it! If you need more detailed information on configuring your compose file, see my notes below.
 
 ## Updating LibreChat
-
-As of v0.7.0+, Docker installations transitioned from building images locally to using prebuilt images [hosted on Github Container registry](https://github.com/danny-avila?tab=packages&repo_name=LibreChat).
-
-You can still build the image locally, as shown in the commented commands below. More info on building the image locally in the [Docker Compose Override Section](../configuration/docker_override.md).
-
-The following commands will fetch the latest LibreChat project changes, including any necessary changes to the docker compose files, as well as the latest prebuilt images.
+The following commands will fetch the latest code of LibreChat and build a new docker image.
 
 ```bash
 # Stop the running container(s)
@@ -68,16 +63,13 @@ git pull
 # Pull the latest LibreChat image (default setup)
 docker compose pull
 
-# If building the LibreChat image Locally, build without cache (legacy setup)
-# docker compose build --no-cache
-
 # Start LibreChat
 docker compose up
 ```
 
-If you're having issues running the above commands, you can try a comprehensive approach instead:
+If you're having issues running the above commands, you can try a comprehensive approach:
 
-Note: you may need to prefix commands with `sudo` according to your environment permissions.
+Prefix commands with `sudo` according to your environment permissions.
 
 ```bash
 # Stop the container (if running)

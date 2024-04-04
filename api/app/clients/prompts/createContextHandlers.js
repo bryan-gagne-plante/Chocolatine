@@ -1,6 +1,5 @@
 const axios = require('axios');
 const { isEnabled } = require('~/server/utils');
-const { logger } = require('~/config');
 
 const footer = `Use the context as your learned knowledge to better answer the user.
 
@@ -56,7 +55,7 @@ function createContextHandlers(req, userMessageContent) {
         processedFiles.push(file);
         processedIds.add(file.file_id);
       } catch (error) {
-        logger.error(`Error processing file ${file.filename}:`, error);
+        console.error(`Error processing file ${file.filename}:`, error);
       }
     }
   };
@@ -145,8 +144,8 @@ function createContextHandlers(req, userMessageContent) {
 
       return prompt;
     } catch (error) {
-      logger.error('Error creating context:', error);
-      throw error;
+      console.error('Error creating context:', error);
+      throw error; // Re-throw the error to propagate it to the caller
     }
   };
 

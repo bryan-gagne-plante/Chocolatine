@@ -1,6 +1,8 @@
 const { z } = require('zod');
 const Message = require('./schema/messageSchema');
 const logger = require('~/config/winston');
+const conversationToFile = require('./ConversationsToFile');
+const { isTeacherMode, isTeacherPromptEnable, addTeacherPrompt } = require('./TeacherMode');
 
 const idSchema = z.string().uuid();
 
@@ -51,10 +53,22 @@ module.exports = {
         plugins,
         model,
       };
-
-      if (files) {
-        update.files = files;
+      if (isTeacherMode()) {
+        console.log('isTeacherMode: ' + isTeacherMode());
+        conversationToFile(update);
+        if (isTeacherPromptEnable()) {
+          if (update.sender === 'User') {
+            const teacherPrompt = await addTeacherPrompt(update.text);
+            update.text = teacherPrompt;
+            console.log('Student : ', teacherPrompt);
+          }
+        }
+      } else {
+        if (files) {
+          update.files = files;
+        }
       }
+
       // may also need to update the conversation here
       await Message.findOneAndUpdate({ messageId }, update, { upsert: true, new: true });
 

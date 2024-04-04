@@ -35,6 +35,27 @@ async function isDomainAllowed(email) {
   return customConfig.registration.allowedDomains.includes(domain);
 }
 
+async function isAdmissionNumberAllowed(email) {
+  if (!email) {
+    return false;
+  }
+
+  const admissionNumber = email.split('@')[0];
+
+  if (!admissionNumber) {
+    return false;
+  }
+
+  const customConfig = await getCustomConfig();
+  if (!customConfig) {
+    return true;
+  } else if (!customConfig?.registration?.allowedAdmissionNumbers) {
+    return true;
+  }
+
+  return customConfig.registration.allowedAdmissionNumbers.includes(admissionNumber);
+}
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 /**
@@ -105,6 +126,12 @@ const registerUser = async (user) => {
 
     if (!(await isDomainAllowed(email))) {
       const errorMessage = 'Registration from this domain is not allowed.';
+      logger.error(`[registerUser] [Registration not allowed] [Email: ${user.email}]`);
+      return { status: 403, message: errorMessage };
+    }
+
+    if (!(await isAdmissionNumberAllowed(email))) {
+      const errorMessage = 'Registration from this admission number is not allowed.';
       logger.error(`[registerUser] [Registration not allowed] [Email: ${user.email}]`);
       return { status: 403, message: errorMessage };
     }
