@@ -82,6 +82,9 @@ const startServer = async () => {
   app.use('/api/config', routes.config);
   app.use('/api/assistants', routes.assistants);
   app.use('/api/files', await routes.files.initialize());
+  // TEACHER
+  app.use('/api/isTeacher', routes.isTeacher);
+  app.use('/api/teacherSubjects', routes.teacherSubjects);
 
   app.use((req, res) => {
     res.status(404).sendFile(path.join(app.locals.paths.dist, 'index.html'));
