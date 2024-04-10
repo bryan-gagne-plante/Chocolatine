@@ -19,6 +19,10 @@ export function abortRequestWithMessage(
   return request.post(endpoints.abortRequest(endpoint), { arg: { abortKey, message } });
 }
 
+export function getRole(): Promise<t.TRole> {
+  return request.get(endpoints.userRole());
+}
+
 export function deleteConversation(payload: t.TDeleteConversationRequest) {
   //todo: this should be a DELETE request
   return request.post(endpoints.deleteConversation(), { arg: payload });

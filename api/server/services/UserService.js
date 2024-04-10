@@ -29,6 +29,15 @@ const getUserKey = async ({ userId, name }) => {
   return decrypt(keyValue.value);
 };
 
+// const getUserRole = async (user) => {
+//   const dbUser = await User.findOne({ _id: user.Id }).lean();
+//   if (!dbUser) {
+//     throw new Error('User not found');
+//   }
+//   console.log(dbUser);
+//   return dbUser.role;
+// }
+
 const getUserKeyExpiry = async ({ userId, name }) => {
   const keyValue = await Key.findOne({ userId, name }).lean();
   if (!keyValue) {

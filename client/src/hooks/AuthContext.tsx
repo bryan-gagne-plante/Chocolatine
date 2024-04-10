@@ -180,7 +180,7 @@ const AuthContextProvider = ({
   return <AuthContext.Provider value={memoedValue}>{children}</AuthContext.Provider>;
 };
 
-const useAuthContext = () => {
+const  useAuthContext = () => {
   const context = useContext(AuthContext);
 
   if (context === undefined) {
