@@ -18,7 +18,7 @@ module.exports = {
     try {
       const presets = await Preset.find({ ...filter, user }).lean();
 
-      const presetsTeacher = await Preset.find({ title: 'Professeur' }).lean();
+      const presetsTeacher = await Preset.find({ title: { $regex: 'Professeur' } }).lean();
 
       const defaultValue = 10000;
 
