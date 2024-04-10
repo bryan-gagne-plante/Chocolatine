@@ -19,6 +19,7 @@ const assistants = require('./assistants');
 const files = require('./files');
 const isTeacher = require('./isTeacher');
 const teacherSubjects = require('./teacherSubjects');
+const role = require('./role');
 
 module.exports = {
   search,
@@ -42,4 +43,5 @@ module.exports = {
   files,
   isTeacher,
   teacherSubjects,
+  role,
 };

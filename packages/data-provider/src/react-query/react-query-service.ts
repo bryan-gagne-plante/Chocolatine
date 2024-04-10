@@ -31,6 +31,18 @@ export const useAbortRequestWithMessage = (): UseMutationResult<
   );
 };
 
+export const useGetUserRole = (
+  config?: UseQueryOptions<t.TRole>,
+): QueryObserverResult<t.TRole> => {
+  return useQuery<t.TRole>([QueryKeys.userRole], () => dataService.getRole(), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    retry: false,
+    ...config,
+  });
+};
+
 export const useGetUserQuery = (
   config?: UseQueryOptions<t.TUser>,
 ): QueryObserverResult<t.TUser> => {

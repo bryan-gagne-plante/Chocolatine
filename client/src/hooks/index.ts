@@ -8,6 +8,7 @@ export * from './Messages';
 export * from './Plugins';
 export * from './SSE';
 
+
 export * from './AuthContext';
 export * from './ThemeContext';
 export * from './ScreenshotContext';
@@ -34,3 +35,4 @@ export { default as useOriginNavigate } from './useOriginNavigate';
 export { default as useNavigateToConvo } from './useNavigateToConvo';
 export { default as useSetIndexOptions } from './useSetIndexOptions';
 export { default as useGenerationsByLatest } from './useGenerationsByLatest';
+export { default as useUserRole } from './useUserRole';

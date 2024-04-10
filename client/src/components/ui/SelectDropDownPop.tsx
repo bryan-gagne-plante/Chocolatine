@@ -5,7 +5,6 @@ import type { Option } from '~/common';
 import { useLocalize } from '~/hooks';
 import { cn } from '~/utils/';
 import { useMultiSearch } from './MultiSearch';
-import { useTeacherData } from '../../hooks/useTeacherData';
 
 type SelectDropDownProps = {
   id?: string;
@@ -31,8 +30,6 @@ function SelectDropDownPop({
   emptyTitle = false,
 }: SelectDropDownProps) {
   const localize = useLocalize();
-  const isTeacher = useTeacherData().isTeacher;
-  const subjects = useTeacherData().subjects;
   const transitionProps = { className: 'top-full mt-3' };
   if (showAbove) {
     transitionProps.className = 'bottom-full mb-3';
@@ -63,8 +60,8 @@ function SelectDropDownPop({
             <button
               data-testid="select-dropdown-button"
               className={cn(
-                'pointer-cursor relative flex flex-col rounded-md border border-black/10 bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus:ring-0 focus:ring-offset-0 dark:border-white/20 dark:bg-gray-800 sm:text-sm',
-                'hover:bg-gray-50 radix-state-open:bg-gray-50 dark:hover:bg-black/10 dark:radix-state-open:bg-black/20',
+                'pointer-cursor relative flex flex-col rounded-md border border-black/10 bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus:ring-0 focus:ring-offset-0 dark:border-gray-700 dark:bg-gray-800 sm:text-sm',
+                'hover:bg-gray-50 radix-state-open:bg-gray-50 dark:hover:bg-gray-700 dark:radix-state-open:bg-gray-700',
               )}
             >
               {' '}
@@ -108,31 +105,23 @@ function SelectDropDownPop({
             <Content
               side="bottom"
               align="start"
-              className="mt-2 max-h-[52vh] min-w-full overflow-hidden overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-white lg:max-h-[52vh]"
+              className={cn(
+                'mt-2 max-h-[52vh] min-w-full overflow-hidden overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-700 dark:text-white lg:max-h-[52vh]',
+                hasSearchRender && 'relative',
+              )}
             >
-              {isTeacher
-                ? subjects.map((subject, index) => {
-                  return (
-                    <MenuItem
-                      key={index}
-                      title={subject}
-                      value={subject}
-                      selected={!!(value && value === subject)}
-                      onClick={() => setValue(subject)}
-                    />
-                  );
-                })
-                : availableValues.map((option) => {
-                  return (
-                    <MenuItem
-                      key={option}
-                      title={option}
-                      value={option}
-                      selected={!!(value && value === option)}
-                      onClick={() => setValue(option)}
-                    />
-                  );
-                })}
+              {searchRender}
+              {options.map((option) => {
+                return (
+                  <MenuItem
+                    key={option}
+                    title={option}
+                    value={option}
+                    selected={!!(value && value === option)}
+                    onClick={() => setValue(option)}
+                  />
+                );
+              })}
             </Content>
           </Portal>
         </div>

@@ -22,6 +22,7 @@ export enum QueryKeys {
   tools = 'tools',
   actions = 'actions',
   assistantDocs = 'assistantDocs',
+  userRole = 'userRole',
 }
 
 export enum MutationKeys {

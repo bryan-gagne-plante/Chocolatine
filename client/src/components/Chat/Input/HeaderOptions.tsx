@@ -118,6 +118,7 @@ export default function HeaderOptions() {
               isOpen={showPluginStoreDialog}
               setIsOpen={setShowPluginStoreDialog}
             />
+            
           </span>
         </div>
       </Anchor>

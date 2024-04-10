@@ -83,6 +83,11 @@ export type TUser = {
   updatedAt: string;
 };
 
+export type TRole = {
+  role: string;
+};
+
+
 export type TGetConversationsResponse = {
   conversations: TConversation[];
   pageNumber: string;
