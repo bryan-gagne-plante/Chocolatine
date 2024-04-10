@@ -20,6 +20,7 @@ export * from './Templates';
 export * from './Textarea';
 export * from './TextareaAutosize';
 export * from './Tooltip';
+export * from './SubjectTeacher';
 export { default as Dropdown } from './Dropdown';
 export { default as FileUpload } from './FileUpload';
 export { default as DelayedRender } from './DelayedRender';

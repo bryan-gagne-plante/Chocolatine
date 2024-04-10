@@ -18,6 +18,10 @@ import { useAuthContext } from '~/hooks/AuthContext';
 import { NotificationSeverity } from '~/common';
 import useLocalize from '~/hooks/useLocalize';
 import store from '~/store';
+//FOR TEACHER
+import { useContext } from 'react';
+import { PresetTeacherContext } from '~/Providers/PresetTeacherContext';
+import { useTeacherData } from '../useTeacherData';
 
 export default function usePresets() {
   const localize = useLocalize();
@@ -31,6 +35,15 @@ export default function usePresets() {
   const setPresetModalVisible = useSetRecoilState(store.presetModalVisible);
   const { preset, conversation, newConversation, setPreset } = useChatContext();
   const presetsQuery = useGetPresetsQuery({ enabled: !!user && isAuthenticated });
+
+  //FOR TEACHER
+  const isTeacher = useTeacherData().isTeacher;
+  const presetTeacherContext = useContext(PresetTeacherContext);
+  if (!presetTeacherContext) {
+    throw new Error('usePresets must be used within a PresetTeacherContext.Provider');
+  }
+
+  const { setSelectedPreset } = presetTeacherContext;
 
   useEffect(() => {
     const { data: presets } = presetsQuery;
@@ -147,6 +160,11 @@ export default function usePresets() {
   const onSelectPreset = (newPreset: TPreset) => {
     if (!newPreset) {
       return;
+    }
+
+    // FOR TEACHER
+    if(isTeacher){
+      setSelectedPreset(newPreset);
     }
 
     const toastTitle = newPreset.title

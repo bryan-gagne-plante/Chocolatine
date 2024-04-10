@@ -2,6 +2,7 @@ const teacher = {
   teacherMode: process.env.TEACHERMODE,
   teacherPromptEnable: process.env.TEACHER_PROMPT_ENABLED,
   teacherPrompt: process.env.TEACHER_PROMPT,
+  teacherSubjects: process.env.teacherSubjects,
 };
 
 function isTeacherMode() {
@@ -16,8 +17,13 @@ async function addTeacherPrompt(prompt) {
   return prompt + teacher.teacherPrompt;
 }
 
+async function teacherSubjects() {
+  return teacher.teacherSubjects;
+}
+
 module.exports = {
   isTeacherMode,
   isTeacherPromptEnable,
   addTeacherPrompt,
+  teacherSubjects,
 };
