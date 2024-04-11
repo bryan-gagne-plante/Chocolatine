@@ -1,9 +1,8 @@
 import { useOutletContext } from 'react-router-dom';
 import type { ContextType } from '~/common';
-import { EndpointsMenu, PresetsMenu, HeaderNewChat, AdminMenu } from './Menus';
+import { EndpointsMenu, PresetsMenu, HeaderNewChat, AdminMenu, SubjectMenu } from './Menus';
 import HeaderOptions from './Input/HeaderOptions';
 import useUserRole from '~/hooks/useUserRole';
-import SubjectTeacher from '../ui/SubjectTeacher';
 
 export default function Header() {
   const { navVisible } = useOutletContext<ContextType>();
@@ -15,7 +14,7 @@ export default function Header() {
         <EndpointsMenu />
         <HeaderOptions />
         <PresetsMenu />
-        <SubjectTeacher />
+        <SubjectMenu />
         {role === 'ADMIN' && <AdminMenu />}
       </div>
       {/* Empty div for spacing */}
