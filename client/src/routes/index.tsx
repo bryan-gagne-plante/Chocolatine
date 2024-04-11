@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import Root from './Root';
 import ChatRoute from './ChatRoute';
+import AdminRoute from './AdminRoute';
 // import Search from './Search';
 import {
   Login,
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
     element: <ResetPassword />,
   },
   {
+    path: 'admin',
+    element: <AdminRoute />,
+  },
+  {
     element: <AuthLayout />,
     children: [
       {
@@ -50,6 +55,7 @@ export const router = createBrowserRouter([
             path: 'c/:conversationId?',
             element: <ChatRoute />,
           },
+          
           // {
           //   path: 'search/:query?',
           //   element: <Search />,
