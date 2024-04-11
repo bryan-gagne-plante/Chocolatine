@@ -23,6 +23,10 @@ export function getRole(): Promise<t.TRole> {
   return request.get(endpoints.userRole());
 }
 
+export function getTokenUsage(): Promise<t.TGetTokenUsage[]> {
+  return request.get(endpoints.tokenUsage());
+}
+
 export function deleteConversation(payload: t.TDeleteConversationRequest) {
   //todo: this should be a DELETE request
   return request.post(endpoints.deleteConversation(), { arg: payload });

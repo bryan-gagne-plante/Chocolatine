@@ -6,6 +6,8 @@ export const userPlugins = () => '/api/user/plugins';
 
 export const userRole = () => '/api/role';
 
+export const tokenUsage = () => '/api/tokenUsage';
+
 export const messages = (conversationId: string, messageId?: string) =>
   `/api/messages/${conversationId}${messageId ? `/${messageId}` : ''}`;
 
