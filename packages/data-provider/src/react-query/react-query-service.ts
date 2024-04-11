@@ -43,6 +43,17 @@ export const useGetUserRole = (
   });
 };
 
+export const useGetTokenUsage = (
+  config?: UseQueryOptions<t.TGetTokenUsage[]>,
+): QueryObserverResult<t.TGetTokenUsage[]> => {
+  return useQuery<t.TGetTokenUsage[]>([QueryKeys.tokenUsage], () => dataService.getTokenUsage(), {
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+    ...config,
+  });
+};
+
 export const useGetUserQuery = (
   config?: UseQueryOptions<t.TUser>,
 ): QueryObserverResult<t.TUser> => {
