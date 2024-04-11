@@ -3,6 +3,7 @@ const { isEnabled } = require('../server/utils/handleText');
 const transactionSchema = require('./schema/transaction');
 const { getMultiplier } = require('./tx');
 const Balance = require('./Balance');
+const TokenUsage = require('./TokenUsage');
 const cancelRate = 1.15;
 
 // Method to calculate and set the tokenValue for a transaction
@@ -18,6 +19,10 @@ transactionSchema.methods.calculateTokenValue = function () {
     this.tokenValue = Math.ceil(this.tokenValue * cancelRate);
     this.rate *= cancelRate;
   }
+};
+
+transactionSchema.methods.getRawTokenCount = function () {
+  return this.rawAmount;
 };
 
 /**
@@ -37,6 +42,13 @@ transactionSchema.statics.create = async function (transactionData) {
 
   // Save the transaction
   await transaction.save();
+
+  // Update the token usage count
+  await TokenUsage.findOneAndUpdate(
+    { user: transaction.user },
+    { $inc: { tokenUsage: transaction.getRawTokenCount() } },
+    { upsert: true },
+  );
 
   if (!isEnabled(process.env.CHECK_BALANCE)) {
     return;
