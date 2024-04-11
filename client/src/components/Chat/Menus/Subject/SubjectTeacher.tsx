@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { cn } from '~/utils';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { PresetTeacherContext } from '~/Providers/PresetTeacherContext';
 import { getPresetTitle } from '../../../../utils/presets';
 
@@ -13,6 +13,7 @@ const SubjectTeacher: FC = () =>{
   }
   const { selectedPreset } = context;
   const title = selectedPreset ? getPresetTitle(selectedPreset) : '';
+
   return (
     <div
       className={cn(
@@ -20,7 +21,7 @@ const SubjectTeacher: FC = () =>{
         'radix-state-open:bg-gray-50 dark:radix-state-open:bg-gray-700',
         'z-50 flex h-[40px] min-w-4 flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
       )}>
-      <h1>Preset selectionne:</h1>
+      <span>Preset selectionne:</span>
       <div className={cn('truncate')}>
         {title}
       </div>

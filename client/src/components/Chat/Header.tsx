@@ -16,7 +16,7 @@ export default function Header() {
         <EndpointsMenu />
         <HeaderOptions />
         <PresetsMenu />
-        {isTeacher && <SubjectMenu />}
+        <SubjectMenu />
         {isTeacher && role === 'ADMIN' && <AdminMenu />}
       </div>
       {/* Empty div for spacing */}
