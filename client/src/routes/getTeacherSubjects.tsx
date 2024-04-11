@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export function getTeacherSubjects() {
   return axios
-    .get('http://localhost:3080/api/teacherSubjects')
+    .get('api/teacherSubjects')
     .then((response) => {
       return response.data.split(',').map((subject) => subject.trim());
     })

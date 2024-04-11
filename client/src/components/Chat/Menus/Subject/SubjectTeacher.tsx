@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { cn } from '~/utils';
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { PresetTeacherContext } from '~/Providers/PresetTeacherContext';
 import { getPresetTitle } from '../../../../utils/presets';
 
@@ -12,7 +12,7 @@ const SubjectTeacher: FC = () =>{
     throw new Error('usePresetTeacher must be used within a PresetTeacherProvider');
   }
   const { selectedPreset } = context;
-  const title = selectedPreset ? getPresetTitle(selectedPreset) : '';
+  const title = selectedPreset?.title;
 
   return (
     <div

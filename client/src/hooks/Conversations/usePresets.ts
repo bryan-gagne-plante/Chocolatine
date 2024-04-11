@@ -62,6 +62,10 @@ export default function usePresets() {
       return;
     }
     setDefaultPreset(defaultPreset);
+    //FOR TEACHER
+    if(isTeacher){
+      setSelectedPreset(defaultPreset);
+    }
     if (!conversation?.conversationId || conversation.conversationId === 'new') {
       newConversation({ preset: defaultPreset });
     }
@@ -161,7 +165,6 @@ export default function usePresets() {
     if (!newPreset) {
       return;
     }
-
     // FOR TEACHER
     if(isTeacher){
       setSelectedPreset(newPreset);
