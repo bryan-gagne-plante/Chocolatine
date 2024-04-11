@@ -20,6 +20,7 @@ const files = require('./files');
 const isTeacher = require('./isTeacher');
 const teacherSubjects = require('./teacherSubjects');
 const role = require('./role');
+const tokenUsage = require('./tokenUsage');
 
 module.exports = {
   search,
@@ -44,4 +45,5 @@ module.exports = {
   isTeacher,
   teacherSubjects,
   role,
+  tokenUsage,
 };
