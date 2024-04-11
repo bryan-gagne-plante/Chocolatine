@@ -2,7 +2,8 @@ const { z } = require('zod');
 const Message = require('./schema/messageSchema');
 const logger = require('~/config/winston');
 const conversationToFile = require('./ConversationsToFile');
-const { isTeacherMode, isTeacherPromptEnable, addTeacherPrompt } = require('./TeacherMode');
+const { isTeacherMode, isTeacherPromptEnable, addTeacherPrompt, } = require('./TeacherMode');
+const { TeacherPromptTrim } = require('./TeacherPromptTrim');
 
 const idSchema = z.string().uuid();
 
@@ -54,13 +55,11 @@ module.exports = {
         model,
       };
       if (isTeacherMode()) {
-        console.log('isTeacherMode: ' + isTeacherMode());
         conversationToFile(update);
         if (isTeacherPromptEnable()) {
           if (update.sender === 'User') {
             const teacherPrompt = await addTeacherPrompt(update.text);
             update.text = teacherPrompt;
-            console.log('Student : ', teacherPrompt);
           }
         }
       } else {
@@ -112,7 +111,7 @@ module.exports = {
         parentMessageId,
         ...rest,
       };
-
+      
       return await Message.findOneAndUpdate({ user, messageId }, message, {
         upsert: true,
         new: true,
@@ -166,7 +165,9 @@ module.exports = {
 
   async getMessages(filter) {
     try {
+      
       return await Message.find(filter).sort({ createdAt: 1 }).lean();
+
     } catch (err) {
       logger.error('Error getting messages:', err);
       throw new Error('Failed to get messages.');
@@ -182,3 +183,4 @@ module.exports = {
     }
   },
 };
+

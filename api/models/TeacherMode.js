@@ -21,9 +21,14 @@ async function teacherSubjects() {
   return teacher.teacherSubjects;
 }
 
+function getTeacherPrompt() {
+  return teacher.teacherPrompt;
+}
+
 module.exports = {
   isTeacherMode,
   isTeacherPromptEnable,
   addTeacherPrompt,
   teacherSubjects,
+  getTeacherPrompt,
 };
