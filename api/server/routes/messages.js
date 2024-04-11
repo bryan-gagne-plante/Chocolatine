@@ -20,6 +20,7 @@ router.get('/:conversationId', validateMessageReq, async (req, res) => {
 // CREATE
 router.post('/:conversationId', validateMessageReq, async (req, res) => {
   const message = req.body;
+  //console.log(message.message);
   const savedMessage = await saveMessage({ ...message, user: req.user.id });
   await saveConvo(req.user.id, savedMessage);
   res.status(201).send(savedMessage);

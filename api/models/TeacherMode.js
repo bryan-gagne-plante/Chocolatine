@@ -17,13 +17,22 @@ async function addTeacherPrompt(prompt) {
   return prompt + teacher.teacherPrompt;
 }
 
+<<<<<<< Updated upstream
 async function teacherSubjects() {
   return teacher.teacherSubjects;
+=======
+function getTeacherPrompt() {
+  return teacher.teacherPrompt;
+>>>>>>> Stashed changes
 }
 
 module.exports = {
   isTeacherMode,
   isTeacherPromptEnable,
   addTeacherPrompt,
+<<<<<<< Updated upstream
   teacherSubjects,
+=======
+  getTeacherPrompt,
+>>>>>>> Stashed changes
 };
