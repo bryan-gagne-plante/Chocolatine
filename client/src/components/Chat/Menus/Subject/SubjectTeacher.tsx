@@ -2,7 +2,6 @@ import type { FC } from 'react';
 import { cn } from '~/utils';
 import { useContext } from 'react';
 import { PresetTeacherContext } from '~/Providers/PresetTeacherContext';
-import { getPresetTitle } from '../../../../utils/presets';
 
 const SubjectTeacher: FC = () =>{
   const context = useContext(PresetTeacherContext);
@@ -13,6 +12,7 @@ const SubjectTeacher: FC = () =>{
   }
   const { selectedPreset } = context;
   const title = selectedPreset?.title;
+  console.log('title', title);
 
   return (
     <div
