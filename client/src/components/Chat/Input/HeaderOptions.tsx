@@ -9,17 +9,21 @@ import { ModelSelect } from '~/components/Input/ModelSelect';
 import { PluginStoreDialog } from '~/components';
 import OptionsPopover from './OptionsPopover';
 import PopoverButtons from './PopoverButtons';
-import { useSetIndexOptions } from '~/hooks';
+import { useSetIndexOptions, useUserRole } from '~/hooks';
 import { useChatContext } from '~/Providers';
 import { Button } from '~/components/ui';
 import { cn, cardStyle } from '~/utils/';
 import store from '~/store';
+import { useTeacherData } from '~/hooks/useTeacherData';
 
 export default function HeaderOptions() {
   const [saveAsDialogShow, setSaveAsDialogShow] = useState<boolean>(false);
   const [showPluginStoreDialog, setShowPluginStoreDialog] = useRecoilState(
     store.showPluginStoreDialog,
   );
+
+  const isTeacher = useTeacherData().isTeacher;
+  const role = useUserRole();
 
   const { showPopover, conversation, latestMessage, setShowPopover, setShowBingToneSetting } =
     useChatContext();
@@ -61,67 +65,73 @@ export default function HeaderOptions() {
   const triggerAdvancedMode = altConditions[endpoint]
     ? altSettings[endpoint]
     : () => setShowPopover((prev) => !prev);
-  return (
-    <Root
-      open={showPopover}
-      // onOpenChange={} //  called when the open state of the popover changes.
-    >
-      <Anchor>
-        <div className="my-auto lg:max-w-2xl xl:max-w-3xl">
-          <span className="flex w-full flex-col items-center justify-center gap-0 md:order-none md:m-auto md:gap-2">
-            <div className="z-[61] flex w-full items-center justify-center gap-2">
-              <ModelSelect
-                conversation={conversation}
-                setOption={setOption}
-                isMultiChat={true}
-                showAbove={false}
-              />
-              {!noSettings[endpoint] && (
-                <Button
-                  type="button"
-                  className={cn(
-                    cardStyle,
-                    'z-50 flex h-[40px] min-w-4 flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
-                    'hover:bg-gray-50 radix-state-open:bg-gray-50 dark:hover:bg-gray-700 dark:radix-state-open:bg-gray-700',
-                  )}
-                  onClick={triggerAdvancedMode}
-                >
-                  <Settings2 className="w-4 text-gray-600 dark:text-white" />
-                </Button>
-              )}
-            </div>
-            <OptionsPopover
-              visible={showPopover}
-              saveAsPreset={saveAsPreset}
-              closePopover={() => setShowPopover(false)}
-              PopoverButtons={<PopoverButtons />}
-            >
-              <div className="px-4 py-4">
-                <EndpointSettings
+
+  if(role !== 'ADMIN' && isTeacher){
+    return <></>
+  }
+  else{
+    return (
+      <Root
+        open={showPopover}
+        // onOpenChange={} //  called when the open state of the popover changes.
+      >
+        <Anchor>
+          <div className="my-auto lg:max-w-2xl xl:max-w-3xl">
+            <span className="flex w-full flex-col items-center justify-center gap-0 md:order-none md:m-auto md:gap-2">
+              <div className="z-[61] flex w-full items-center justify-center gap-2">
+                <ModelSelect
                   conversation={conversation}
                   setOption={setOption}
                   isMultiChat={true}
+                  showAbove={false}
                 />
-                <AlternativeSettings conversation={conversation} setOption={setOption} />
+                {!noSettings[endpoint] && (
+                  <Button
+                    type="button"
+                    className={cn(
+                      cardStyle,
+                      'z-50 flex h-[40px] min-w-4 flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
+                      'hover:bg-gray-50 radix-state-open:bg-gray-50 dark:hover:bg-gray-700 dark:radix-state-open:bg-gray-700',
+                    )}
+                    onClick={triggerAdvancedMode}
+                  >
+                    <Settings2 className="w-4 text-gray-600 dark:text-white" />
+                  </Button>
+                )}
               </div>
-            </OptionsPopover>
-            <SaveAsPresetDialog
-              open={saveAsDialogShow}
-              onOpenChange={setSaveAsDialogShow}
-              preset={
-                tPresetUpdateSchema.parse({
-                  ...conversation,
-                }) as TPreset
-              }
-            />
-            <PluginStoreDialog
-              isOpen={showPluginStoreDialog}
-              setIsOpen={setShowPluginStoreDialog}
-            />
-            
-          </span>
-        </div>
-      </Anchor>
-    </Root>
-  );
+              <OptionsPopover
+                visible={showPopover}
+                saveAsPreset={saveAsPreset}
+                closePopover={() => setShowPopover(false)}
+                PopoverButtons={<PopoverButtons />}
+              >
+                <div className="px-4 py-4">
+                  <EndpointSettings
+                    conversation={conversation}
+                    setOption={setOption}
+                    isMultiChat={true}
+                  />
+                  <AlternativeSettings conversation={conversation} setOption={setOption} />
+                </div>
+              </OptionsPopover>
+              <SaveAsPresetDialog
+                open={saveAsDialogShow}
+                onOpenChange={setSaveAsDialogShow}
+                preset={
+                  tPresetUpdateSchema.parse({
+                    ...conversation,
+                  }) as TPreset
+                }
+              />
+              <PluginStoreDialog
+                isOpen={showPluginStoreDialog}
+                setIsOpen={setShowPluginStoreDialog}
+              />
+              
+            </span>
+          </div>
+        </Anchor>
+      </Root>
+    );
+  }
 }

@@ -2,9 +2,12 @@ import type { FC } from 'react';
 import { BookCopy } from 'lucide-react';
 import { Content, Portal, Root, Trigger } from '@radix-ui/react-popover';
 import { EditPresetDialog, PresetItems } from './Presets';
-import { useLocalize, usePresets } from '~/hooks';
+import { useLocalize, usePresets, useUserRole } from '~/hooks';
 import { useChatContext } from '~/Providers';
 import { cn } from '~/utils';
+import { get } from 'http';
+import getIsTeacherMode from '~/routes/getIsTeacherMode';
+import { useTeacherData } from '~/hooks/useTeacherData';
 
 const PresetsMenu: FC = () => {
   const localize = useLocalize();
@@ -20,6 +23,8 @@ const PresetsMenu: FC = () => {
     exportPreset,
   } = usePresets();
   const { preset } = useChatContext();
+  const role = useUserRole();
+  const isTeacher = useTeacherData().isTeacher;
 
   const presets = presetsQuery.data || [];
   return (

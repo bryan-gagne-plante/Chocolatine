@@ -1,11 +1,16 @@
 const teacher = {
-  teacherMode: process.env.TEACHERMODE,
+
   teacherPromptEnable: process.env.TEACHER_PROMPT_ENABLED,
   teacherPrompt: process.env.TEACHER_PROMPT,
 };
 
 function isTeacherMode() {
-  return teacher.teacherMode;
+  let isTeacher = false;
+  if(process.env.TEACHERMODE){
+    isTeacher = process.env.TEACHERMODE === 'true';
+  }
+  
+  return isTeacher;
 }
 
 function isTeacherPromptEnable() {
