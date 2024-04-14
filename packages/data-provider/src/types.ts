@@ -83,6 +83,15 @@ export type TUser = {
   updatedAt: string;
 };
 
+export type TRole = {
+  role: string;
+};
+
+export type TGetTokenUsage = {
+  email: string;
+  tokenCount: number;
+};
+
 export type TGetConversationsResponse = {
   conversations: TConversation[];
   pageNumber: string;

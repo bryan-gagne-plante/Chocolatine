@@ -12,6 +12,16 @@ router.get('/', async (req, res) => {
   res.status(200).json(presets);
 });
 
+router.get('/default', async (req, res) => {
+  const { title } = req.query;
+  const preset = await getPresets(req.user.id).find(p => p.title === title);
+  if (preset) {
+    res.status(200).json(preset);
+  } else {
+    res.status(404).send('Preset not found');
+  }
+});
+
 router.post('/', async (req, res) => {
   const update = req.body || {};
 

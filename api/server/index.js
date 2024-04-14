@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const path = require('path');
 require('module-alias')({ base: path.resolve(__dirname, '..') });
@@ -64,6 +65,8 @@ const startServer = async () => {
 
   app.use('/oauth', routes.oauth);
   // API Endpoints
+  app.use('/api/role', routes.role);
+  app.use('/api/tokenUsage', routes.tokenUsage);
   app.use('/api/auth', routes.auth);
   app.use('/api/keys', routes.keys);
   app.use('/api/user', routes.user);
@@ -82,6 +85,8 @@ const startServer = async () => {
   app.use('/api/config', routes.config);
   app.use('/api/assistants', routes.assistants);
   app.use('/api/files', await routes.files.initialize());
+  // TEACHER
+  app.use('/api/isTeacher', routes.isTeacher);
 
   app.use((req, res) => {
     res.status(404).sendFile(path.join(app.locals.paths.dist, 'index.html'));

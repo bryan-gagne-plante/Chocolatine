@@ -17,6 +17,9 @@ const user = require('./user');
 const config = require('./config');
 const assistants = require('./assistants');
 const files = require('./files');
+const isTeacher = require('./isTeacher');
+const role = require('./role');
+const tokenUsage = require('./tokenUsage');
 
 module.exports = {
   search,
@@ -38,4 +41,7 @@ module.exports = {
   config,
   assistants,
   files,
+  isTeacher,
+  role,
+  tokenUsage,
 };

@@ -1,6 +1,6 @@
 import { useOutletContext } from 'react-router-dom';
 import type { ContextType } from '~/common';
-import { EndpointsMenu, PresetsMenu, HeaderNewChat } from './Menus';
+import { EndpointsMenu, PresetsMenu, HeaderNewChat, AdminMenu, SubjectMenu } from './Menus';
 import HeaderOptions from './Input/HeaderOptions';
 
 export default function Header() {
@@ -12,6 +12,8 @@ export default function Header() {
         <EndpointsMenu />
         <HeaderOptions />
         <PresetsMenu />
+        <SubjectMenu />
+        <AdminMenu />
       </div>
       {/* Empty div for spacing */}
       <div />

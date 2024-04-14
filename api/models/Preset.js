@@ -18,7 +18,7 @@ module.exports = {
     try {
       const presets = await Preset.find({ ...filter, user }).lean();
 
-      const presetsTeacher = await Preset.find({ title: 'Professeur' }).lean();
+      const presetsTeacher = await Preset.find({ title: { $regex: 'Professeur' } }).lean();
 
       const defaultValue = 10000;
 
@@ -63,9 +63,19 @@ module.exports = {
           });
         }
       } else if (defaultPreset === false) {
-        update.defaultPreset = undefined;
-        update.order = undefined;
-        setter['$unset'] = { defaultPreset: '', order: '' };
+        if(isTeacherMode()) {
+          const presetToDefault = await Preset.findById("c838ee87-ec6e-4b7c-a0e3-8b970cd9f0e3");
+          if (presetToDefault) {
+            presetToDefault.defaultPreset = true;
+            presetToDefault.order = 0;
+            await presetToDefault.save();
+          }
+        }
+        else {
+          update.defaultPreset = undefined;
+          update.order = undefined;
+          setter['$unset'] = { defaultPreset: '', order: '' };
+        }
       }
 
       setter.$set = update;
