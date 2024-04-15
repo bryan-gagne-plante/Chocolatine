@@ -1,5 +1,4 @@
 const teacher = {
-
   teacherPromptEnable: process.env.TEACHER_PROMPT_ENABLED,
   teacherPrompt: process.env.TEACHER_PROMPT,
 };
