@@ -40,7 +40,7 @@ export default function usePresets() {
   const isTeacher = useTeacherData().isTeacher;
   const presetTeacherContext = useContext(PresetTeacherContext);
   if (!presetTeacherContext) {
-    throw new Error('usePresets must be used within a PresetTeacherContext.Provider');
+    throw new Error('usePresets must be used within a PresetTeacherContext.Provider (*usePresets*)');
   }
 
   const { setSelectedPreset } = presetTeacherContext;
