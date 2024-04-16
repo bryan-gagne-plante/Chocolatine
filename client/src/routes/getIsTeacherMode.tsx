@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export function getIsTeacherMode() {
   return axios
-    .get('http://localhost:3080/api/isTeacher')
+    .get('/api/isTeacher')
     .then((response) => {
       return response.data;
     })
