@@ -21,7 +21,7 @@ const SubjectTeacher: FC = () =>{
         'radix-state-open:bg-gray-50 dark:radix-state-open:bg-gray-700',
         'z-50 flex h-[40px] min-w-4 flex-none items-center justify-center px-3 focus:ring-0 focus:ring-offset-0',
       )}>
-      <span>{title ? 'Preset selectionne:' : 'Veuillez selectionner un professeur'}</span>
+      <span>{title ? 'Preset selectionne:' : '<--- Veuillez selectionner un professeur'}</span>
       <div className={cn('truncate')}>
         {title}
       </div>
