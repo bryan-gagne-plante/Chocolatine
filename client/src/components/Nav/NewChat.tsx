@@ -6,6 +6,8 @@ import { useLocalize, useNewConvo, useLocalStorage } from '~/hooks';
 import { icons } from '~/components/Chat/Menus/Endpoints/Icons';
 import { NewChatIcon } from '~/components/svg';
 import { getEndpointField } from '~/utils';
+import { useContext } from 'react';
+import { PresetTeacherContext } from '~/Providers';
 
 export default function NewChat({
   toggleNav,
@@ -26,12 +28,20 @@ export default function NewChat({
   const iconKey = endpointType ? 'unknown' : endpoint ?? 'unknown';
   const Icon = icons[iconKey];
 
+  const context = useContext(PresetTeacherContext);
+  if (!context) {
+    throw new Error('usePresetTeacher must be used within a PresetTeacherProvider (*SubjectTeacher*)');
+  }
+  const { setSelectedPreset } = context;
+  
+
   const clickHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (event.button === 0 && !event.ctrlKey) {
       event.preventDefault();
       newConvo();
       navigate('/c/new');
       toggleNav();
+      setSelectedPreset(undefined);
     }
   };
 

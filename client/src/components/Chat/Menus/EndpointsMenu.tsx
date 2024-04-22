@@ -6,16 +6,13 @@ import { useChatContext, useAssistantsMapContext } from '~/Providers';
 import EndpointItems from './Endpoints/MenuItems';
 import TitleButton from './UI/TitleButton';
 import { mapEndpoints } from '~/utils';
-import { useUserRole } from '~/hooks';
-import { useTeacherData } from '~/hooks/useTeacherData';
 
 
 const EndpointsMenu: FC = () => {
   const { data: endpoints = [] } = useGetEndpointsQuery({
     select: mapEndpoints,
   });
-  const role = useUserRole();
-  const isTeacher = useTeacherData().isTeacher;
+
   const { conversation } = useChatContext();
   const { endpoint = '', assistant_id = null } = conversation ?? {};
   const assistantMap = useAssistantsMapContext();
@@ -30,12 +27,6 @@ const EndpointsMenu: FC = () => {
 
   const primaryText = assistant ? assistantName : (alternateName[endpoint] ?? endpoint ?? '') + ' ';
 
-  if((role !== 'ADMIN' && isTeacher)){
-    console.log('Teacher is not an admin');
-    console.log(isTeacher);
-    return <></>
-  }
-  else{
     return (
       <Root>
         <TitleButton primaryText={primaryText + ' '} />
@@ -62,6 +53,4 @@ const EndpointsMenu: FC = () => {
       </Root>
     );
   }
-};
-
 export default EndpointsMenu;

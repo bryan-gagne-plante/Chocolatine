@@ -14,7 +14,6 @@ import { MenuSeparator, MenuItem } from '../UI';
 import { icons } from '../Endpoints/Icons';
 import { useLocalize, useUserRole } from '~/hooks';
 import store from '~/store';
-import { useTeacherData } from '~/hooks/useTeacherData';
 
 const PresetItems: FC<{
   presets: TPreset[];
@@ -36,8 +35,6 @@ const PresetItems: FC<{
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const defaultPreset = useRecoilValue(store.defaultPreset);
   const localize = useLocalize();
-  const role = useUserRole();
-  const isTeacher = useTeacherData().isTeacher;
   return (
     <>
       <div
@@ -55,7 +52,6 @@ const PresetItems: FC<{
               ? `${localize('com_endpoint_preset_default_item')} ${defaultPreset.title}`
               : localize('com_endpoint_preset_default_none')}
           </label>
-          {((role === 'ADMIN' && isTeacher) || !isTeacher) && 
           <Dialog>
             <DialogTrigger asChild>
               <label
@@ -98,7 +94,6 @@ const PresetItems: FC<{
             />
             <FileUpload onFileSelected={onFileSelected} />
           </Dialog>
-          }
         </div>
       </div>
       {presets && presets.length === 0 && (
@@ -147,7 +142,6 @@ const PresetItems: FC<{
                       selected={false}
                       data-testid={`preset-item-${preset}`}
                     >
-                      {((role === 'ADMIN' && isTeacher) || !isTeacher) &&  
                       <div className="flex h-full items-center justify-end gap-1">
                         <button
                           className="m-0 h-full rounded-md p-2 text-gray-400 hover:text-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:text-gray-200 sm:invisible sm:group-hover:visible"
@@ -180,7 +174,6 @@ const PresetItems: FC<{
                           <TrashIcon />
                         </button>
                       </div>
-                      }
                     </MenuItem>
                   </Flipped>
                   {i !== presets.length - 1 && <MenuSeparator />}
