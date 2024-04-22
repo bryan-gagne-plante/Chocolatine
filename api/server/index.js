@@ -7,6 +7,7 @@ const axios = require('axios');
 const express = require('express');
 const passport = require('passport');
 const mongoSanitize = require('express-mongo-sanitize');
+const validateImageRequest = require('./middleware/validateImageRequest');
 const errorController = require('./controllers/ErrorController');
 const { jwtLogin, passportLogin } = require('~/strategies');
 const configureSocialLogins = require('./socialLogins');
@@ -44,7 +45,8 @@ const startServer = async () => {
   app.use(mongoSanitize());
   app.use(express.urlencoded({ extended: true, limit: '3mb' }));
   app.use(express.static(app.locals.paths.dist));
-  app.use(express.static(app.locals.paths.publicPath));
+  app.use(express.static(app.locals.paths.fonts));
+  app.use(express.static(app.locals.paths.assets));
   app.set('trust proxy', 1); // trust first proxy
   app.use(cors());
 
@@ -87,6 +89,7 @@ const startServer = async () => {
   app.use('/api/files', await routes.files.initialize());
   // TEACHER
   app.use('/api/isTeacher', routes.isTeacher);
+  app.use('/images/', validateImageRequest, routes.staticRoute);
 
   app.use((req, res) => {
     res.status(404).sendFile(path.join(app.locals.paths.dist, 'index.html'));
