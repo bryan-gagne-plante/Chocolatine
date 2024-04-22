@@ -239,14 +239,14 @@ export const uploadAssistantAvatar = (data: m.AssistantAvatarVariables): Promise
   );
 };
 
-export const getFileDownload = async (userId: string, file_id: string): Promise<AxiosResponse> => {
-  return request.getResponse(`${endpoints.files()}/download/${userId}/${file_id}`, {
-    responseType: 'blob',
-    headers: {
-      Accept: 'application/octet-stream',
-    },
-  });
-};
+// export const getFileDownload = async (userId: string, file_id: string): Promise<AxiosResponse> => {
+//   return request.getResponse(`${endpoints.files()}/download/${userId}/${file_id}`, {
+//     responseType: 'blob',
+//     headers: {
+//       Accept: 'application/octet-stream',
+//     },
+//   });
+// };
 
 export const deleteFiles = async (
   files: f.BatchFile[],
@@ -270,14 +270,6 @@ export function getActions(): Promise<a.Action[]> {
 export function getAssistantDocs(): Promise<a.AssistantDocument[]> {
   return request.get(endpoints.assistants('documents'));
 }
-
-export const deleteFiles = async (
-  files: f.BatchFile[],
-  assistant_id?: string,
-): Promise<f.DeleteFilesResponse> =>
-  request.deleteWithOptions(endpoints.files(), {
-    data: { files, assistant_id },
-  });
 
 /* conversations */
 
