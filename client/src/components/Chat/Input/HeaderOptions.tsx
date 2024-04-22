@@ -22,9 +22,6 @@ export default function HeaderOptions() {
     store.showPluginStoreDialog,
   );
 
-  const isTeacher = useTeacherData().isTeacher;
-  const role = useUserRole();
-
   const { showPopover, conversation, latestMessage, setShowPopover, setShowBingToneSetting } =
     useChatContext();
   const { setOption } = useSetIndexOptions();
@@ -66,10 +63,6 @@ export default function HeaderOptions() {
     ? altSettings[endpoint]
     : () => setShowPopover((prev) => !prev);
 
-  if(role !== 'ADMIN' && isTeacher){
-    return <></>
-  }
-  else{
     return (
       <Root
         open={showPopover}
@@ -134,4 +127,3 @@ export default function HeaderOptions() {
       </Root>
     );
   }
-}

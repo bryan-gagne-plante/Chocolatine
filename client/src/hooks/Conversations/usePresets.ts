@@ -42,8 +42,8 @@ export default function usePresets() {
   if (!presetTeacherContext) {
     throw new Error('usePresets must be used within a PresetTeacherContext.Provider');
   }
-
   const { setSelectedPreset } = presetTeacherContext;
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     const { data: presets } = presetsQuery;
