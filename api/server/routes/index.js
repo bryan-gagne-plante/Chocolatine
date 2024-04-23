@@ -17,6 +17,7 @@ const user = require('./user');
 const config = require('./config');
 const assistants = require('./assistants');
 const files = require('./files');
+const staticRoute = require('./static');
 const isTeacher = require('./isTeacher');
 const role = require('./role');
 const tokenUsage = require('./tokenUsage');
@@ -41,6 +42,7 @@ module.exports = {
   config,
   assistants,
   files,
+  staticRoute,
   isTeacher,
   role,
   tokenUsage,
