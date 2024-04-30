@@ -16,11 +16,13 @@ export default function useSideNavLinks({
   assistants,
   keyProvided,
   endpoint,
+  role,
 }: {
   hidePanel: () => void;
   assistants?: TConfig | null;
   keyProvided: boolean;
   endpoint?: EModelEndpoint | null;
+  role: string | null;
 }) {
   const Links = useMemo(() => {
     const links: NavLink[] = [];
@@ -33,11 +35,12 @@ export default function useSideNavLinks({
     //     Component: Parameters,
     //   });
     // }
+    console.log('ROLE UTILISATEUR:', role);
     if (
       endpoint === EModelEndpoint.assistants &&
       assistants &&
       assistants.disableBuilder !== true &&
-      keyProvided
+      keyProvided && role === 'ADMIN'
     ) {
       links.push({
         title: 'com_sidepanel_assistant_builder',
@@ -65,7 +68,7 @@ export default function useSideNavLinks({
     });
 
     return links;
-  }, [assistants, keyProvided, hidePanel, endpoint]);
+  }, [assistants, keyProvided, hidePanel, endpoint, role]);
 
   return Links;
 }

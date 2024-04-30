@@ -6,7 +6,7 @@ import { EModelEndpoint, type TEndpointsConfig } from 'librechat-data-provider';
 import { ResizableHandleAlt, ResizablePanel, ResizablePanelGroup } from '~/components/ui/Resizable';
 import { TooltipProvider, Tooltip } from '~/components/ui/Tooltip';
 import useSideNavLinks from '~/hooks/Nav/useSideNavLinks';
-import { useMediaQuery, useLocalStorage } from '~/hooks';
+import { useMediaQuery, useLocalStorage, useUserRole } from '~/hooks';
 import { Separator } from '~/components/ui/Separator';
 import NavToggle from '~/components/Nav/NavToggle';
 import { useChatContext } from '~/Providers';
@@ -69,7 +69,8 @@ const SidePanel = ({
     panelRef.current?.collapse();
   }, []);
 
-  const Links = useSideNavLinks({ hidePanel, assistants, keyProvided, endpoint });
+  const role = useUserRole();
+  const Links = useSideNavLinks({ hidePanel, assistants, keyProvided, endpoint, role });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledSaveLayout = useCallback(
