@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { registerSchema, errorsToString } = require('~/strategies/validators');
 const isDomainAllowed = require('./isDomainAllowed');
+const isUserNameAllowed = require('./isUserNameAllowed');
 const Token = require('~/models/schema/tokenSchema');
 const { sendEmail } = require('~/server/utils');
 const Session = require('~/models/Session');
@@ -87,8 +88,8 @@ const registerUser = async (user) => {
       return { status: 403, message: errorMessage };
     }
 
-    if (!(await isAdmissionNumberAllowed(email))) {
-      const errorMessage = 'Registration from this admission number is not allowed.';
+    if (!(await isUserNameAllowed(email))) {
+      const errorMessage = 'Registration from this user name is not allowed.';
       logger.error(`[registerUser] [Registration not allowed] [Email: ${user.email}]`);
       return { status: 403, message: errorMessage };
     }
