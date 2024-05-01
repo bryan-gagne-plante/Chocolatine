@@ -35,7 +35,7 @@ function TeacherSkills() {
 
   return (
     <div className='conntainer p-5'>
-      <p className='mb-5'>Liste des competences</p>
+      <h3><Label>Liste des competences</Label></h3>
       <Table className='w-3/4 border p-2 mb-5'>
         <TableHeader>
           <TableRow>
@@ -55,7 +55,7 @@ function TeacherSkills() {
         </TableBody>
       </Table>
       <div className='w-1/4 mb-5'>
-        <p className='mb-5'>Action a effectuer</p>
+        <h3><Label>Action a effectuer</Label></h3>
         <Input className='w-full' value={subject} onChange={e => setSubject(e.target.value)} placeholder="cours"/>
         <Input className='w-full' value={skillName} onChange={e => setSkillName(e.target.value)} placeholder="competence" />
       </div>
