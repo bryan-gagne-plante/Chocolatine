@@ -23,6 +23,25 @@ export function getRole(): Promise<t.TRole> {
   return request.get(endpoints.userRole());
 }
 
+export function postFeedback(feedback: t.TFeedBack): Promise<t.TFeedBack> {
+  return request.post(endpoints.postfeedback(), feedback);
+}
+
+export function getFeedbacks(): Promise<t.TFeedBack[]> {
+  return request.get(endpoints.getFeedbacks());
+}
+
+export function getFeedbackByPreset(preset: string): Promise<t.TFeedBack[]> {
+  return request.get(endpoints.getFeedbackByPreset(preset));
+}
+
+export function getFeedbackByPresetAndPositivity(
+  preset: string,
+  feedback: boolean,
+): Promise<t.TFeedBack[]> {
+  return request.get(endpoints.getFeedbackByPresetAndPositivity(preset, feedback));
+}
+
 export function getTokenUsage(): Promise<t.TGetTokenUsage[]> {
   return request.get(endpoints.tokenUsage());
 }

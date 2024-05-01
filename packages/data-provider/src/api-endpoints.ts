@@ -1,3 +1,5 @@
+import { TFeedBack } from "./schemas";
+
 export const user = () => '/api/user';
 
 export const balance = () => '/api/balance';
@@ -5,6 +7,14 @@ export const balance = () => '/api/balance';
 export const userPlugins = () => '/api/user/plugins';
 
 export const userRole = () => '/api/role';
+
+export const postfeedback = () => `/api/feedback/`;
+
+export const getFeedbacks = () => `/api/feedback/all`;
+
+export const getFeedbackByPreset = (preset: string) => `/api/feedback/${preset}`;
+
+export const getFeedbackByPresetAndPositivity = (preset: string, feedback: boolean) => `/api/feedback/${preset}/${feedback}`;
 
 export const tokenUsage = () => '/api/tokenUsage';
 

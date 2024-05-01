@@ -87,6 +87,12 @@ export type TRole = {
   role: string;
 };
 
+export type TFeedBack = {
+  messageId: string;
+  message: string;
+  feedback: boolean;
+};
+
 export type TGetTokenUsage = {
   email: string;
   tokenCount: number;

@@ -36,3 +36,4 @@ export { default as useNavigateToConvo } from './useNavigateToConvo';
 export { default as useSetIndexOptions } from './useSetIndexOptions';
 export { default as useGenerationsByLatest } from './useGenerationsByLatest';
 export { default as useUserRole } from './useUserRole';
+export { default as useFeedBack } from './useFeedback';

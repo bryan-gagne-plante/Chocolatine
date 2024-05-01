@@ -5,6 +5,12 @@ import type { TFile } from './types/files';
 
 export const isUUID = z.string().uuid();
 
+export type TFeedBack = {
+  messageId : string;
+  message : string;
+  feedback: boolean;
+};
+
 export enum EModelEndpoint {
   azureOpenAI = 'azureOpenAI',
   openAI = 'openAI',

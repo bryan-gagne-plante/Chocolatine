@@ -88,6 +88,7 @@ const startServer = async () => {
   app.use('/api/assistants', routes.assistants);
   app.use('/api/files', await routes.files.initialize());
   // TEACHER
+  app.use('/api/feedback', routes.feedback);
   app.use('/api/isTeacher', routes.isTeacher);
   app.use('/images/', validateImageRequest, routes.staticRoute);
 

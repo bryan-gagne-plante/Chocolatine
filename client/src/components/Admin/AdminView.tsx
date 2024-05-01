@@ -2,8 +2,8 @@ import { memo } from 'react';
 import { Button, Label, ThemeSelector } from '../ui';
 import { useNavigate } from 'react-router-dom';
 import { TokenUsage } from '~/components/Admin/Tools';
-import {cn} from "~/utils";
-import colors from "tailwindcss/colors";
+import FeedBackTable from '~/components/Admin/FeedBackTable';
+
 
 const AdminView = () => {
   const navigate = useNavigate();
@@ -11,16 +11,18 @@ const AdminView = () => {
     navigate('/c/new');
   };
 
+
   return (
     <>
-      <h1>Admin View</h1>
+      <h1><Label>Admin View</Label></h1>
       <div>
-        <Button className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded" onClick={returnToChat}>
-          <span>Retourne au Chat</span>
+        <Button  onClick={returnToChat}>
+          Retourne au Chat
         </Button>
       </div>
       <TokenUsage/>
-      <ThemeSelector />
+      
+      <FeedBackTable />
     </>
   );
 };

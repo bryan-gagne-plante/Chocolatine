@@ -5,6 +5,7 @@ import {
   useQueryClient,
   UseMutationResult,
   QueryObserverResult,
+  UseMutationOptions,
 } from '@tanstack/react-query';
 import { defaultOrderQuery, initialModelsConfig } from '../config';
 import * as dataService from '../data-service';
@@ -42,6 +43,58 @@ export const useGetUserRole = (
     ...config,
   });
 };
+
+export const usePostFeedback = (
+  feedback: t.TFeedBack,
+  config?: UseMutationOptions<t.TFeedBack, unknown, t.TFeedBack>,
+): UseMutationResult<t.TFeedBack, unknown, t.TFeedBack> => {
+  return useMutation<t.TFeedBack, unknown, t.TFeedBack>(
+    () => dataService.postFeedback(feedback) as Promise<t.TFeedBack>,
+    config,
+  );
+}
+
+export const useGetFeedbacks= (
+  config?: UseQueryOptions<t.TFeedBack[]>
+): QueryObserverResult<t.TFeedBack[]> => {
+  return useQuery<t.TFeedBack[]>([QueryKeys.getfeedbacks], () => dataService.getFeedbacks(), {
+
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    retry: false,
+    ...config,
+  });
+};
+
+export const useGetFeedbackByPreset = (
+  preset: string,
+  config?: UseQueryOptions<t.TFeedBack[]>
+): QueryObserverResult<t.TFeedBack[]> => {
+  return useQuery<t.TFeedBack[]>([QueryKeys.getfeedbackByPreset, preset], () => dataService.getFeedbackByPreset(preset), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    retry: false,
+    ...config,
+  });
+};
+
+export const useGetFeedbackByPresetAndPositivity = (
+  preset: string,
+  feedback: boolean,
+  config?: UseQueryOptions<t.TFeedBack[]>
+): QueryObserverResult<t.TFeedBack[]> => {
+  return useQuery<t.TFeedBack[]>([QueryKeys.getfeedbackByPresetAndPositivity, preset, feedback], () => dataService.getFeedbackByPresetAndPositivity(preset, feedback), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    retry: false,
+    ...config,
+  });
+};
+
+
 
 export const useGetTokenUsage = (
   config?: UseQueryOptions<t.TGetTokenUsage[]>,
