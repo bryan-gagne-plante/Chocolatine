@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Button, Label, ThemeSelector } from '../ui';
 import { useNavigate } from 'react-router-dom';
-import { TokenUsage } from '~/components/Admin/Tools';
+import { TokenUsage , TeacherSkills } from '~/components/Admin/Tools';
 import FeedBackTable from '~/components/Admin/FeedBackTable';
 
 
@@ -21,8 +21,9 @@ const AdminView = () => {
         </Button>
       </div>
       <TokenUsage/>
-      
+      <TeacherSkills/>
       <FeedBackTable />
+      <ThemeSelector />
     </>
   );
 };

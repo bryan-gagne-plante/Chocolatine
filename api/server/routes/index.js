@@ -21,6 +21,7 @@ const staticRoute = require('./static');
 const isTeacher = require('./isTeacher');
 const role = require('./role');
 const tokenUsage = require('./tokenUsage');
+const teacherSkills = require('./teacherSkills');
 const feedback = require('./feedback');
 
 module.exports = {
@@ -48,4 +49,5 @@ module.exports = {
   role,
   tokenUsage,
   feedback,
+  teacherSkills,
 };

@@ -46,6 +46,38 @@ export function getTokenUsage(): Promise<t.TGetTokenUsage[]> {
   return request.get(endpoints.tokenUsage());
 }
 
+export function getAllSkills(): Promise<t.TSkill[]> {
+  return request.get(endpoints.allSkills());
+}
+
+export function getSkillsBySubject(subject: string): Promise<t.TSkill[]> {
+  return request.get(endpoints.skillsBySubject(subject));
+}
+
+export function getSkillsBySkill(skill: string): Promise<t.TSkill[]> {
+  return request.get(endpoints.skillsBySkill(skill));
+}
+
+export function getSkillsBySubjectAndSkill(subject: string, skill: string): Promise<t.TSkill[]> {
+  return request.get(endpoints.skillsBySubjectAndSkill(subject, skill));
+}
+
+export function createSkill(newSkill: { subject: string, skill: string }): Promise<unknown> {
+  return request.post(endpoints.createSkill(), newSkill);
+}
+
+export function incrementSkill(skill: t.TSkill): Promise<unknown> {
+  return request.put(endpoints.incrementSkill(skill.subject, skill.skill));
+}
+
+export function resetSkill(skill: t.TSkill): Promise<unknown> {
+  return request.put(endpoints.resetSkill(skill.subject, skill.skill));
+}
+
+export function deleteSkill(skill: t.TSkill): Promise<unknown> {
+  return request.delete(endpoints.deleteSkill(skill.subject, skill.skill));
+}
+
 export function deleteConversation(payload: t.TDeleteConversationRequest) {
   //todo: this should be a DELETE request
   return request.post(endpoints.deleteConversation(), { arg: payload });

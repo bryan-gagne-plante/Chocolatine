@@ -1,11 +1,12 @@
 import {
   UseQueryOptions,
   useQuery,
+  UseMutationOptions,
   useMutation,
   useQueryClient,
   UseMutationResult,
   QueryObserverResult,
-  UseMutationOptions,
+  QueryClient,
 } from '@tanstack/react-query';
 import { defaultOrderQuery, initialModelsConfig } from '../config';
 import * as dataService from '../data-service';
@@ -105,6 +106,120 @@ export const useGetTokenUsage = (
     refetchOnMount: true,
     ...config,
   });
+};
+
+export const useGetAllSkills = (
+  config?: UseQueryOptions<t.TSkill[]>,
+): QueryObserverResult<t.TSkill[]> => {
+  return useQuery<t.TSkill[]>([QueryKeys.teacherSkills], () => dataService.getAllSkills(), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    ...config,
+  });
+};
+
+export const useGetSkillsBySubject = (
+  subject: string,
+  config?: UseQueryOptions<t.TSkill[]>,
+): QueryObserverResult<t.TSkill[]> => {
+  return useQuery<t.TSkill[]>([QueryKeys.teacherSkills, subject], () => dataService.getSkillsBySubject(subject), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    ...config,
+  });
+};
+
+export const useGetSkillsBySkill = (
+  skill: string,
+  config?: UseQueryOptions<t.TSkill[]>,
+): QueryObserverResult<t.TSkill[]> => {
+  return useQuery<t.TSkill[]>([QueryKeys.teacherSkills, skill], () => dataService.getSkillsBySkill(skill), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    ...config,
+  });
+};
+
+export const useGetSkillsBySubjectAndSkill = (
+  subject: string,
+  skill: string,
+  config?: UseQueryOptions<t.TSkill[]>,
+): QueryObserverResult<t.TSkill[]> => {
+  return useQuery<t.TSkill[]>([QueryKeys.teacherSkills, subject, skill],
+    () => dataService.getSkillsBySubjectAndSkill(subject, skill),
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      ...config,
+    },
+  );
+};
+
+export const useCreateSkill = (
+  newSkill: t.TSkill,
+  queryClient: QueryClient,
+  config?: UseMutationOptions<t.TSkill, unknown, t.TSkill>,
+): UseMutationResult<t.TSkill, unknown, t.TSkill> => {
+  return useMutation<t.TSkill, unknown, t.TSkill>(
+    () => dataService.createSkill(newSkill) as Promise<t.TSkill>,
+    {
+      ...config,
+      onSuccess: () => {
+        queryClient.invalidateQueries([QueryKeys.teacherSkills]);
+      },
+    },
+  );
+};
+
+export const useIncrementSkill = (
+  skill: t.TSkill,
+  queryClient: QueryClient,
+  config?: UseMutationOptions<t.TSkill, unknown, t.TSkill>,
+): UseMutationResult<t.TSkill, unknown, t.TSkill> => {
+  return useMutation<t.TSkill, unknown, t.TSkill>(
+    () => dataService.incrementSkill(skill) as Promise<t.TSkill>,
+    {
+      ...config,
+      onSuccess: () => {
+        queryClient.invalidateQueries([QueryKeys.teacherSkills]);
+      },
+    },
+  );
+};
+
+export const useResetSkill = (
+  skill: t.TSkill,
+  queryClient: QueryClient,
+  config?: UseMutationOptions<t.TSkill, unknown, t.TSkill>,
+): UseMutationResult<t.TSkill, unknown, t.TSkill> => {
+  return useMutation<t.TSkill, unknown, t.TSkill>(
+    () => dataService.resetSkill(skill) as Promise<t.TSkill>,
+    {
+      ...config,
+      onSuccess: () => { queryClient.invalidateQueries([QueryKeys.teacherSkills]);
+      },
+    },
+  );
+};
+
+export const useDeleteSkill = (
+  skill: t.TSkill,
+  queryClient: QueryClient,
+  config?: UseMutationOptions<t.TSkill, unknown, t.TSkill>,
+): UseMutationResult<t.TSkill, unknown, t.TSkill> => {
+  return useMutation<t.TSkill, unknown, t.TSkill>(
+    () => dataService.deleteSkill(skill) as Promise<t.TSkill>,
+    {
+      ...config,
+      onSuccess: () => {
+        queryClient.invalidateQueries([QueryKeys.teacherSkills]);
+      },
+    },
+  );
 };
 
 export const useGetUserQuery = (

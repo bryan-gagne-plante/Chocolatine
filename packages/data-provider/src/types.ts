@@ -98,6 +98,12 @@ export type TGetTokenUsage = {
   tokenCount: number;
 };
 
+export type TSkill = {
+  subject: string;
+  skill: string;
+  count: number;
+}
+
 export type TGetConversationsResponse = {
   conversations: TConversation[];
   pageNumber: string;
