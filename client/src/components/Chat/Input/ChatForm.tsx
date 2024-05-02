@@ -1,13 +1,13 @@
 import { useRecoilState } from 'recoil';
 import { useForm } from 'react-hook-form';
-import { memo, useCallback, useRef, useMemo, useContext } from 'react';
+import { memo, useCallback, useRef, useMemo } from 'react';
 import {
   supportsFiles,
   mergeFileConfig,
   fileConfig as defaultFileConfig,
   EModelEndpoint,
 } from 'librechat-data-provider';
-import { useChatContext, useAssistantsMapContext, PresetTeacherContext } from '~/Providers';
+import { useChatContext, useAssistantsMapContext } from '~/Providers';
 import { useRequiresKey, useTextarea } from '~/hooks';
 import { TextareaAutosize } from '~/components/ui';
 import { useGetFileConfig } from '~/data-provider';
@@ -28,17 +28,6 @@ const ChatForm = ({ index = 0 }) => {
   const methods = useForm<{ text: string }>({
     defaultValues: { text: '' },
   });
-
-  //TEACHER
-  const context = useContext(PresetTeacherContext);
-
-  if(!context)
-  {
-    throw new Error('usePresetTeacher must be used within a PresetTeacherProvider (*SubjectTeacher*)');
-  }
-  const { selectedPreset } = context;
-  const title = selectedPreset?.title;
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const { handlePaste, handleKeyDown, handleCompositionStart, handleCompositionEnd } = useTextarea({
     textAreaRef,
@@ -85,8 +74,8 @@ const ChatForm = ({ index = 0 }) => {
     [conversation?.assistant_id, conversation?.endpoint, assistantMap],
   );
   const disableInputs = useMemo(
-    () => !!(requiresKey || invalidAssistant || !title),
-    [requiresKey, invalidAssistant, title],
+    () => !!(requiresKey || invalidAssistant),
+    [requiresKey, invalidAssistant],
   );
 
   const { ref, ...registerProps } = methods.register('text', {
